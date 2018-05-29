@@ -1,0 +1,11 @@
+<% @random_values.each do |rv| %>
+  <ul>
+    <li>
+      <% if rv.to_f < 0.2 %>
+        <span class="" style="color: red;"><%= rv %></span>
+      <% else %>
+        <%= rv %>
+      <% end %>
+    </li>
+  </ul>
+<% end %>
