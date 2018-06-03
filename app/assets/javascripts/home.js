@@ -1,27 +1,22 @@
 $(function() {
-  if ($("#js-modify-filter").length) {
-    /* document ready */
-    controlCheckBox();
+  if ($("#js-switch-lever").length) {
+    /* document load */
     resetColor();
-    addColorDefault();
+    setColorDefault();
     setValuesCounter();
+    controlCheckBox();
     
-    /* click modify button */
-    var buttonModify = $("#js-modify-filter")
-    var checkBoxGroup1 = $(".check-group-1")
-    var checkBoxGroup2 = $(".check-group-2")
-    buttonModify.on('click', function() {
-      if(checkBoxGroup1.prop('checked') == false && checkBoxGroup2.prop('checked') == false) { return false }
-      
-      resetColor();
-      
-      if (checkBoxGroup1.prop('checked')) {
-        addColorDefault();
-        setValuesCounter();
-      }
+    var displayColumn = $("#js-select-column");
+    setDisplayColumn(displayColumn.val());
+    
+    /* change select column */
+    displayColumn.on('change', function() {
+      setDisplayColumn($(this).val());
     });
-    
+
     /* change checkbox */
+    var checkBoxGroup1 = $(".check-group-1");
+    var checkBoxGroup2 = $(".check-group-2");
     checkBoxGroup1.on('change', function() {
       controlCheckBox();
     });
@@ -30,8 +25,8 @@ $(function() {
       controlCheckBox();
     });
     
-    /* change lever */
-    var filterLever = $("#js-switch-lever")
+    /* change switch lever */
+    var filterLever = $("#js-switch-lever");
     filterLever.on('change', function() {
       if (filterLever.prop('checked')) {
         removeDefaultContent('on');
@@ -39,42 +34,46 @@ $(function() {
       else {
         removeDefaultContent('off');
       }
+      controlCheckBox();
     });
   }
 });
 
-function addColorDefault() {
+function setColorDefault() {
   var referenceValue = 0.2;
   
-  $(".card .content-def").each(function() {
+  $(".card-custom .content-def").each(function() {
     if (parseFloat($(this).text()) < referenceValue) {
-      return $(this).parent().addClass("color-attend");
+      $(this).parent().addClass("color-attend");
+      $(this).addClass('content-transform');
+      
     }
     else {
-      return $(this).parent().addClass("color-def");
+      $(this).parent().addClass("color-def");
     }
   });
 }
 
 function resetColor() {
-  $(".card").removeClass("color-def");
-  $(".card").removeClass("color-attend");
+  $(".card-custom").removeClass("color-def color-attend content-transform");
 }
 
 function controlCheckBox() {
-  $(".check-group-1").prop('disabled', false)
-  $(".check-group-2").prop('disabled', false)
+  $(".check-group-1, .check-group-2").prop('disabled', false)
 
-  if ($(".check-group-1:checked").length) {
-    $(".check-group-2").prop('disabled', true)
+  if ($("#js-switch-lever").prop('checked')) {
+    $(".check-group-1, .check-group-2").prop('disabled', true);
+  }
+  else if ($(".check-group-1:checked").length) {
+    $(".check-group-2").prop('disabled', true);
   }
   else if ($(".check-group-2:checked").length) {
-    $(".check-group-1").prop('disabled', true)
+    $(".check-group-1").prop('disabled', true);
   }
 }
 
 function removeDefaultContent(flg) {
-  $(".card").parent().removeClass('dis-none');
+  $(".card-custom").parent().removeClass('dis-none');
   if (flg == "on") {
     $(".color-def").each(function() {
       $(this).parent().addClass('dis-none')
@@ -83,9 +82,18 @@ function removeDefaultContent(flg) {
 }
 
 function setValuesCounter() {
-  var valuesCounter = $(".color-attend").length
+  var valuesCounter = $(".color-attend").length;
   var labelText =  $(".check-group-1:checked").map(function() {
-    return $(this).parent().children('label').text()
+    return $(this).parent().children('label').text();
   }).get().toString();
-  $("#js-values-counter").text(labelText + "の件数　" + valuesCounter)
+  $("#js-values-counter").text(labelText + "の件数　" + valuesCounter);
+}
+
+function setDisplayColumn(val) {
+  var cardElem = $(".value-columns");
+  var className = "col s" + (12 / val).toString();
+  
+  cardElem.removeClass('col s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12');
+  
+  cardElem.addClass(className);
 }
