@@ -3,18 +3,40 @@
     text-align: center;
 }
 
+.content-transform {
+    transform: rotate(-10deg);
+    -moz-transform: rotate(-10deg);
+    -webkit-transform: rotate(-10deg);
+}
+
 .color-def {
     @extend .yellow;
     @extend .lighten-4;
     @extend .black-text;
+    font-weight: normal;
 }
 
 .color-attend {
     @extend .red;
     @extend .darken-1;
     @extend .white-text;
+    font-weight: bold;
+    transform: rotate(10deg);
+    -moz-transform: rotate(10deg);
+    -webkit-transform: rotate(10deg);
+}
+
+.card-custom {
+    @extend .card;
+    z-index: -1;
 }
 
 .dis-none {
     display: none;
+}
+
+.sticky {
+    position: -webkit-sticky;/* for safari */
+    position: sticky;
+    top: 25px;/* 固定時の上位置 */
 }
