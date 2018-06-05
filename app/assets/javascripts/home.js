@@ -1,8 +1,8 @@
 $(function() {
   if ($("#js-switch-lever").length) {
     /* document load */
-    resetColor();
-    setColorDefault();
+    setColorTask();
+    countRangeValues();
     setValuesCounter();
     controlCheckBox();
     
@@ -15,16 +15,20 @@ $(function() {
     });
 
     /* change checkbox */
-    var checkBoxGroup1 = $(".check-group-1");
-    var checkBoxGroup2 = $(".check-group-2");
-    checkBoxGroup1.on('change', function() {
+    var allCheckBox = $(".check-group-1, .check-group-2");
+    allCheckBox.on('change', function() {
+      if ($(".check-group-1:checked").length) {
+        setColorTask();
+      }
+      else if($(".check-group-2:checked").length) {
+        setColorRange();
+      }
+      else {
+        setColorDefault();
+      }
       controlCheckBox();
     });
 
-    checkBoxGroup2.on('change', function() {
-      controlCheckBox();
-    });
-    
     /* change switch lever */
     var filterLever = $("#js-switch-lever");
     filterLever.on('change', function() {
@@ -40,22 +44,55 @@ $(function() {
 });
 
 function setColorDefault() {
+  var contentElem = $(".card-custom");
+  contentElem.removeClass('color-def color-attend');
+  contentElem.children('.content-def').removeClass('content-transform');
+  contentElem.addClass('color-def');
+}
+
+function setColorTask() {
   var referenceValue = 0.2;
   
-  $(".card-custom .content-def").each(function() {
+  $(".content-def").each(function() {
     if (parseFloat($(this).text()) < referenceValue) {
+      $(this).parent().removeClass("color-def");
       $(this).parent().addClass("color-attend");
       $(this).addClass('content-transform');
       
     }
     else {
+      $(this).parent().removeClass("color-attend");
+      $(this).removeClass('content-transform');
       $(this).parent().addClass("color-def");
     }
   });
 }
 
-function resetColor() {
-  $(".card-custom").removeClass("color-def color-attend content-transform");
+function setColorRange() {
+  var allRangesElem = $(".check-group-2:checked");
+  var allContent = $(".content-def");
+  var arrayList = [];
+  allRangesElem.each(function() {
+    var obj = {};
+    obj.from = parseFloat($(this).attr('data-value-from'));
+    obj.to = parseFloat($(this).attr('data-value-to'));
+    arrayList.push(obj);
+  });
+  allContent.each(function() {
+    var contentValue = parseFloat($(this).text());
+    var contentElem = $(this);
+    $.each(arrayList, function(index, elem) {
+      if (contentValue >= elem.from && contentValue < elem.to) {
+        contentElem.parent().removeClass('color-def');
+        contentElem.parent().addClass('color-attend');
+        contentElem.addClass('content-transform');
+        return false;
+      }
+      contentElem.parent().removeClass('color-attend');
+      contentElem.removeClass('content-transform');
+      contentElem.parent().addClass('color-def');
+    });
+  });
 }
 
 function controlCheckBox() {
@@ -87,6 +124,23 @@ function setValuesCounter() {
     return $(this).parent().children('label').text();
   }).get().toString();
   $("#js-values-counter").text(labelText + "の件数　" + valuesCounter);
+}
+
+function countRangeValues() {
+  var allRangesElem = $(".check-group-2");
+  var allContent = $(".content-def");
+  allRangesElem.each(function() {
+    var rangeFrom = parseFloat($(this).attr('data-value-from'));
+    var rangeTo = parseFloat($(this).attr('data-value-to'));
+    var i = 0;
+    allContent.each(function() {
+      var contentValue = parseFloat($(this).text());
+      if (contentValue >= rangeFrom && contentValue < rangeTo) {
+        i += 1;
+      }
+    });
+    $(this).parent().children('label').children('.range-counter').text("  (" + i.toString() + "件)");
+  });
 }
 
 function setDisplayColumn(val) {
