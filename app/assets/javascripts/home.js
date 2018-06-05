@@ -1,6 +1,7 @@
 $(function() {
   if ($("#js-switch-lever").length) {
     /* document load */
+    $('select').material_select();  //material_select load
     setColorTask();
     countRangeValues();
     setValuesCounter();
@@ -13,17 +14,36 @@ $(function() {
     displayColumn.on('change', function() {
       setDisplayColumn($(this).val());
     });
+    
+    /* change select number of values */
+    var numberOfValues = $("#js-number-of-value");
+    numberOfValues.on({
+      "ready": function(e) {
+        $(this).prop('readonly', true);
+      },
+      "focus": function(e) {
+        $(this).data({ choice: $(this).val()});
+      },
+      "change": function(e) {
+        if (!confirm("乱数の再生成を行います。セレクトボックスやチェックボックスの値が初期化されますが、よろしいですか？")) {
+          $(this).val( $(this).data('choice'));
+          return false;
+        } else {
+          $(this).prop('readonly', false);
+          this.form.submit();
+          return true;
+        }
+      }
+    });
 
     /* change checkbox */
     var allCheckBox = $(".check-group-1, .check-group-2");
     allCheckBox.on('change', function() {
       if ($(".check-group-1:checked").length) {
         setColorTask();
-      }
-      else if($(".check-group-2:checked").length) {
+      } else if($(".check-group-2:checked").length) {
         setColorRange();
-      }
-      else {
+      } else {
         setColorDefault();
       }
       controlCheckBox();
@@ -34,8 +54,7 @@ $(function() {
     filterLever.on('change', function() {
       if (filterLever.prop('checked')) {
         removeDefaultContent('on');
-      }
-      else {
+      } else {
         removeDefaultContent('off');
       }
       controlCheckBox();
@@ -59,8 +78,7 @@ function setColorTask() {
       $(this).parent().addClass("color-attend");
       $(this).addClass('content-transform');
       
-    }
-    else {
+    } else {
       $(this).parent().removeClass("color-attend");
       $(this).removeClass('content-transform');
       $(this).parent().addClass("color-def");
@@ -100,11 +118,9 @@ function controlCheckBox() {
 
   if ($("#js-switch-lever").prop('checked')) {
     $(".check-group-1, .check-group-2").prop('disabled', true);
-  }
-  else if ($(".check-group-1:checked").length) {
+  } else if ($(".check-group-1:checked").length) {
     $(".check-group-2").prop('disabled', true);
-  }
-  else if ($(".check-group-2:checked").length) {
+  } else if ($(".check-group-2:checked").length) {
     $(".check-group-1").prop('disabled', true);
   }
 }

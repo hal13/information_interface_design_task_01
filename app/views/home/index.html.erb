@@ -1,6 +1,22 @@
 <div class="col s2 sticky">
   <div class="row"></div>
   <div class="row">
+    <div class="col s6">
+      <label>表示列数</label>
+      <select class="browser-default" id="js-select-column">
+        <option value="6" selected='selected'>6</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+    <div class="col s6">
+      <%= form_tag('/', method: 'post') do %>
+        <label>乱数の個数</label>
+        <%= select_tag :number_of_value, options_for_select(@select_number_of_values, @number_of_value),
+          { class: "browser-default", id: "js-number-of-value"} %>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
     <div class="col s12"><label>マーキングする条件</label></div>
     <div class="col s12">
       <p>
@@ -10,19 +26,11 @@
       <div class="divider"></div>
       <% @range_from_to.each_with_index do |h, i| %>
         <p>
-          <input type="checkbox" id="<%= "condition-#{i.to_s}" %>" class="filled-in check-group-2" data-value-from="<%= h[:from] %>" data-value-to="<%= h[:to] %>" />
+          <input type="checkbox" id="<%= "condition-#{i.to_s}" %>" class="filled-in check-group-2"
+            data-value-from="<%= h[:from] %>" data-value-to="<%= h[:to] %>" />
           <label for="<%= "condition-#{i.to_s}" %>"><%= "#{h[:from]}  ～  #{h[:to]}" %><span class="range-counter"></span></label>
         </p>
       <% end %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col s8">
-      <label>表示列数</label>
-      <select class="browser-default" id="js-select-column">
-        <option value="6" selected='selected'>6</option>
-        <option value="12">12</option>
-      </select>
     </div>
   </div>
 </div>
@@ -53,11 +61,3 @@
     <% end %>
   </div>
 </div>
-
-<script type="text/javascript">
-  (function($){
-    $(document).ready(function() {
-      $('select').material_select();
-    });
-  }(jQuery));
-</script>

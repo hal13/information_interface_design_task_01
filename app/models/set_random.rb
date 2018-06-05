@@ -1,5 +1,5 @@
 class SetRandom
-
+  
   class << self
     def get_random_values(count)
       result = []
