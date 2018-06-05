@@ -8,5 +8,16 @@ class SetRandom
       end
       return result
     end
+    
+    def get_value_from_to
+      result = []
+      1.upto(10) do |i|
+        hash = Hash.new
+        hash[:from] = format("%.1f", (i.to_f - 1) / 10)
+        hash[:to] = format("%.1f", i.to_f / 10)
+        result.push(hash)
+      end
+      result
+    end
   end
 end
